@@ -1,8 +1,10 @@
 import Colors from "@/ constant/Colors";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function LoginScreen() {
+  const router = useRouter();
   return (
     <View>
       <View
@@ -48,6 +50,7 @@ export default function LoginScreen() {
         <TouchableOpacity style={styles.button}>
           <Text
             style={{ textAlign: "center", fontSize: 16, color: Colors.PRIMARY }}
+            onPress={() => router.push("/login/signin")}
           >
             Continue
           </Text>
