@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 
-export default function Signin() {
+export default function signUp() {
   const router = useRouter();
   return (
     <View
@@ -17,9 +17,22 @@ export default function Signin() {
         padding: 25,
       }}
     >
-      <Text style={styles.textHeader}>Let's Sign you In</Text>
-      <Text style={styles.subText}>WelCome back</Text>
-      <Text style={styles.subText}>You've been missed!</Text>
+      <Text style={styles.textHeader}>Create New account</Text>
+
+      <View
+        style={{
+          marginTop: 25,
+        }}
+      >
+        <Text
+          style={{
+            marginLeft: 4,
+          }}
+        >
+          Full Name
+        </Text>
+        <TextInput style={styles.textInput} placeholder="Full Name" />
+      </View>
       <View
         style={{
           marginTop: 25,
@@ -60,13 +73,13 @@ export default function Signin() {
             textAlign: "center",
           }}
         >
-          Login
+          Create Account
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.buttonCreate}
-        onPress={() => router.push("/login/signUp")}
+        onPress={() => router.push("/login/signin")}
       >
         <Text
           style={{
@@ -75,7 +88,7 @@ export default function Signin() {
             textAlign: "center",
           }}
         >
-          Create Account
+          Already Account? Sign In
         </Text>
       </TouchableOpacity>
     </View>
