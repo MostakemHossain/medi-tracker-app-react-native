@@ -1,16 +1,42 @@
 import Colors from "@/ constant/Colors";
+import { auth } from "@/config/FirebaseConfig";
 import { useRouter } from "expo-router";
-import React from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
 
 export default function signUp() {
   const router = useRouter();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const onCreateAccount = () => {
+    if (email === "" || password === "") {
+      ToastAndroid.show("Please fill in all fields", ToastAndroid.SHORT);
+      return;
+    }
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        router.push("/(tabs)");
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode == "auth/email-already-in-use") {
+          ToastAndroid.show("Email already in use", ToastAndroid.SHORT);
+        }
+      });
+  };
+
   return (
     <View
       style={{
@@ -45,7 +71,11 @@ export default function signUp() {
         >
           Email
         </Text>
-        <TextInput style={styles.textInput} placeholder="Email" />
+        <TextInput
+          onChangeText={(value) => setEmail(value)}
+          style={styles.textInput}
+          placeholder="Email"
+        />
       </View>
       <View
         style={{
@@ -60,12 +90,13 @@ export default function signUp() {
           Password
         </Text>
         <TextInput
+          onChangeText={(value) => setPassword(value)}
           style={styles.textInput}
           placeholder="Password"
           secureTextEntry={true}
         />
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onCreateAccount}>
         <Text
           style={{
             color: "white",

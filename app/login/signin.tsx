@@ -1,16 +1,43 @@
 import Colors from "@/ constant/Colors";
+import { auth } from "@/config/FirebaseConfig";
 import { useRouter } from "expo-router";
-import React from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
 
 export default function Signin() {
   const router = useRouter();
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const onSignInClick = () => {
+    if (email === "" || password === "") {
+      ToastAndroid.show("Please fill in all fields", ToastAndroid.SHORT);
+      return;
+    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        router.replace("/(tabs)");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode == "auth/invalid-credential") {
+          ToastAndroid.show("Invalid Email or password", ToastAndroid.SHORT);
+        }
+      });
+  };
   return (
     <View
       style={{
@@ -32,7 +59,11 @@ export default function Signin() {
         >
           Email
         </Text>
-        <TextInput style={styles.textInput} placeholder="Email" />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Email"
+          onChangeText={(value) => setEmail(value)}
+        />
       </View>
       <View
         style={{
@@ -47,12 +78,13 @@ export default function Signin() {
           Password
         </Text>
         <TextInput
+          onChangeText={(value) => setPassword(value)}
           style={styles.textInput}
           placeholder="Password"
           secureTextEntry={true}
         />
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onSignInClick}>
         <Text
           style={{
             color: "white",
